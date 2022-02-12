@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+
+  tomo_backend:
+    container_name: tomo_backend_container
+    build:
+      context:  .
+      dockerfile: Dockerfile
+
+  tomo_database:
+    container_name: tomo_database_container
+    build:
+      context: .
+      dockerfile: db/Dockerfile
+      target: base
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - APP_DB_USER=${APP_DB_USER}
+      - APP_DB_PASS=${APP_DB_PASS}
+      - APP_DB_NAME=${APP_DB_NAME}
+    volumes:
+      # - ./postgres-data:/var/lib/postgresql/data
+      - ./db/sql:/docker-entrypoint-initdb.d
+    ports:
+      - 5433:5432
